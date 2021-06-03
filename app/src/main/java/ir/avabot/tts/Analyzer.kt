@@ -1,56 +1,59 @@
 package ir.avabot.tts
 
-class Analyzer(that: AvaBotService, s: String?) {
-    var words: ArrayList<Word>? = ArrayList()
+class Analyzer(that: AvaBotService, seq: CharSequence?) : ArrayList<Analyzer.Word>() {
+    private val chars = Chars()
+    private var curWord = ""
+    private var curType: String? = null
 
     init {
-        if (s == null) words = null
-        else separate(s)
+        if (seq != null) {
+            separate(seq.toString().trim().replace("\n", " "))
+            audios()
+        }
     }
 
     private fun separate(s: String) {
-        val raw = s.trim().replace("\n", " ").split(" ")
-        val complex = ArrayList<Word>()
-        for (w in raw) complex.add(
-            when {
-                w.all { Chars.FA_IR.contains(it) } -> PersianWord(w)
-                w.all {
-                    Chars.FA_IR.contains(it) || Chars.EN_SYM.contains(it) || Chars.FA_SYM.contains(it)
-                } -> PersianComplex(w)
-                w.all { Chars.EN_LOWER.contains(it.lowercaseChar()) } -> EnglishWord(w)
-                w.all {
-                    Chars.EN_LOWER.contains(it.lowercaseChar()) ||
-                            Chars.EN_SYM.contains(it) || Chars.FA_SYM.contains(it)
-                } -> EnglishComplex(w)
-                w.all { Chars.EN_SYM.contains(it) || Chars.FA_SYM.contains(it) } -> Symbol(w)
-                else -> UnknownWord(w)
+        for (ch in s) when (val wh = whiChar(ch)) {
+            Chars.SPACE -> endWord()
+            Chars.ARABIC, Chars.LATIN, Chars.CYRILLIC -> {
+                if (wh != curType) endWord()
+                curType = wh
+                appendChar(ch)
             }
-        )
-        process(complex)
+            Chars.ARABI_NUMBER, Chars.LATIN_NUMBER -> {
+                curType = Chars.NUMERIC
+                appendChar(ch)
+            }
+            else -> {
+                curType = Chars.ELSE
+                appendChar(ch)
+            }
+        }
+        endWord()
     }
 
-    private fun process(complex: ArrayList<Word>) {
-        if (complex.size == 1) {
-            words!!.add(complex[0]); return; }
-        for (w in complex) {
-            ///
-            words!!.add(w)
+    private fun whiChar(ch: Char): String? {
+        if (ch == ' ') return Chars.SPACE
+        for (k in chars.keys) if (ch in chars[k]!!) return k
+        return null
+    }
+
+    private fun endWord() {
+        if (curWord != "" && curType != null)
+            this.add(Word(curWord, this.size, curType!!))
+        curWord = ""
+        curType = null
+    }
+
+    private fun appendChar(ch: Char) {
+        curWord += ch
+    }
+
+    private fun audios() {
+        for (w in this) {
         }
     }
 
 
-    open class Word(val s: String) {
-        fun join(another: Word): Word {
-            ///////
-            return another
-        }
-    }
-    class PersianWord(s: String) : Word(s)
-    class EnglishWord(s: String) : Word(s)
-    class Symbol(s: String) : Word(s)
-    class UnknownWord(s: String) : Word(s)
-
-    open class Complex(s: String) : Word(s)
-    class PersianComplex(s: String) : Complex(s)
-    class EnglishComplex(s: String) : Complex(s)
+    class Word(val s: String, val index: Int, val tag: String, var audio: Int? = null)
 }

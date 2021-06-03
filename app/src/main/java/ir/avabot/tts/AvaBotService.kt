@@ -39,15 +39,16 @@ class AvaBotService : TextToSpeechService() {
     }
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
-        val words = Analyzer(this, request?.charSequenceText?.toString()).words ?: return
-        words
+        val words = Analyzer(this, request?.charSequenceText)
+        if (words.size == 0) return
+
     }
 
 
     override fun onCreate() {
         super.onCreate()
         pool = SoundPool.Builder().apply {
-            setMaxStreams(3)
+            setMaxStreams(2)  // simultaneous
             setAudioAttributes(
                 AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
