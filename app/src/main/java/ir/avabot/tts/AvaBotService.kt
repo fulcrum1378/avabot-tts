@@ -12,7 +12,7 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONObject
 import java.util.*
 
-// adb connect 192.168.1.4:
+// adb connect 192.168.1.20:
 
 class AvaBotService : TextToSpeechService() {
     private lateinit var pool: SoundPool
@@ -22,10 +22,10 @@ class AvaBotService : TextToSpeechService() {
     private var config: JSONObject? = null
 
     companion object {
-        const val configUrl = "http://82.102.10.134/avabot/config.py"
-        const val exPath = "path"
-        const val dfPath = "http://82.102.10.134/avabot/"
-        const val exVoices = "voices"
+        const val dfPath = "https://mahdiparastesh.ir/avabot/"
+        const val configUrl = dfPath + "config.py"
+        const val spPath = "path"
+        const val spVoices = "voices"
         val dfVoices = setOf("fa_te_maryam")
         const val exFormat = "format"
         const val dfFormat = "m4a"
@@ -38,17 +38,17 @@ class AvaBotService : TextToSpeechService() {
             JsonObjectRequest(Request.Method.GET, configUrl, null, { res ->
                 config = res
                 sp.edit().apply {
-                    putString(exPath, config!![exPath] as String)
+                    putString(spPath, config!![spPath] as String)
                     @Suppress("UNCHECKED_CAST")
-                    putStringSet(exVoices, config!![exVoices] as Set<String>)
+                    putStringSet(spVoices, config!![spVoices] as Set<String>)
                     ///////////////////////////////////////
                     putString(exFormat, config!![exFormat] as String)
                     apply()
                 }
             }, {
                 config = JSONObject()
-                config!!.put(exPath, sp.getString(exPath, dfPath))
-                config!!.put(exVoices, sp.getStringSet(exVoices, dfVoices))
+                config!!.put(spPath, sp.getString(spPath, dfPath))
+                config!!.put(spVoices, sp.getStringSet(spVoices, dfVoices))
                 config!!.put(exFormat, sp.getString(exFormat, dfFormat))
             }).setShouldCache(false).setTag("talk").setRetryPolicy(
                 DefaultRetryPolicy(
