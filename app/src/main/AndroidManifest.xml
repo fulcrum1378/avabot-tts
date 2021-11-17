@@ -31,7 +31,9 @@
                 android:resource="@xml/tts_engine" />
         </service>
 
-        <activity android:name=".Settings" />
+        <activity
+            android:name=".Settings"
+            android:exported="true" />
 
         <!--<intent-filter>
                 &lt;!&ndash; OPENS AS SOON AS THE MAIN SETTINGS OPENS UP: &ndash;&gt;

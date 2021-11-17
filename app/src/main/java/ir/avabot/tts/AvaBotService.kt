@@ -94,8 +94,8 @@ class AvaBotService : TextToSpeechService() {
     }
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
-        val words = Analyzer(request?.charSequenceText, this)
-        if (words.size == 0) return
-
+        if (request == null || request.charSequenceText == null) return
+        val sentences = Analyzer(request.charSequenceText.toString()).result
+        // ...
     }
 }

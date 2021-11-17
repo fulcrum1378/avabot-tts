@@ -1,20 +1,9 @@
 package ir.avabot.tts
 
-class Chars : HashMap<String, CharArray>() {
-    companion object {
-        const val SPACE = "SPACE"
-        const val ARABIC = "ARABIC" // script not alphabet
-        const val LATIN = "LATIN"
-        const val CYRILLIC = "CYRILLIC"
-        const val NUMERIC = "NUMERIC"
-        const val ELSE = "ELSE"
+import ir.avabot.tts.Analyzer.Script
+import ir.avabot.tts.Analyzer.Script.*
 
-        const val SYM = "SYM"
-        const val FA_SYM = "FA_SYM"
-        const val LATIN_NUMBER = "LATIN_NUMBER"
-        const val ARABI_NUMBER = "ARABI_NUMBER"
-    }
-
+class Chars : HashMap<Script, CharArray>() {
     init {
         this[ARABIC] = charArrayOf(
             'ا', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص',
@@ -28,12 +17,18 @@ class Chars : HashMap<String, CharArray>() {
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
         )
         this[CYRILLIC] = charArrayOf()
-        this[LATIN_NUMBER] = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-        this[ARABI_NUMBER] = charArrayOf('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹')
-        this[SYM] = charArrayOf(
-            '.', ',', '?', '!', '_', '-', '+', '=', '/', '\\', '\"', '\'', '[', ']',
-            '{', '}', '@', '#', '$', '%', '^', '(', ')'
+        this[NUMERIC] = charArrayOf(
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'
         )
-        this[FA_SYM] = charArrayOf('،', '؟', '٪', '؛', '»', '«')
+        this[CLOSER] = charArrayOf(
+            '.', '!', '?', '؟'
+        )
+        this[MISC_MARK] = charArrayOf(
+            ',', '_', '\\', '\"', '\'', '[', ']', '{', '}', '^', '(', ')', '،', '؛', '»', '«'
+        )
+        this[SPECIAL_MARK] = charArrayOf(
+            '-', '+', '=', '/', '@', '#', '$', '%', '٪'
+        )
     }
 }
