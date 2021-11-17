@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.SoundPool
+import android.os.Bundle
 import android.speech.tts.*
+import android.util.Log
+import android.widget.Toast
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
 import org.json.JSONObject
 import java.util.*
 
@@ -17,7 +21,7 @@ import java.util.*
 class AvaBotService : TextToSpeechService() {
     private lateinit var pool: SoundPool
     private lateinit var sp: SharedPreferences
-    private val c: Context = applicationContext
+    private lateinit var c: Context
     private val farsi = arrayOf("fas", "pes", "")
     private var config: JSONObject? = null
 
@@ -33,8 +37,9 @@ class AvaBotService : TextToSpeechService() {
 
     override fun onCreate() {
         super.onCreate()
-        sp = c.getSharedPreferences("config", Context.MODE_PRIVATE)
-        Volley.newRequestQueue(c).add(
+        c = applicationContext
+        //sp = c.getSharedPreferences("config", Context.MODE_PRIVATE)
+        /*Volley.newRequestQueue(c).add(
             JsonObjectRequest(Request.Method.GET, configUrl, null, { res ->
                 config = res
                 sp.edit().apply {
@@ -55,7 +60,7 @@ class AvaBotService : TextToSpeechService() {
                     10000, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
                 )
             )
-        )
+        )*/
         pool = SoundPool.Builder().apply {
             setMaxStreams(2)  // simultaneous
             setAudioAttributes(
@@ -95,7 +100,9 @@ class AvaBotService : TextToSpeechService() {
 
     override fun onSynthesizeText(request: SynthesisRequest?, callback: SynthesisCallback?) {
         if (request == null || request.charSequenceText == null) return
-        val sentences = Analyzer(request.charSequenceText.toString()).result
-        // ...
+        val sentences = Analyzer(request.charSequenceText.toString())
+        Toast.makeText(
+            c, Gson().toJson(sentences, Analyzer::class.java), Toast.LENGTH_LONG
+        ).show()
     }
 }

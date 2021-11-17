@@ -21,9 +21,7 @@ class Chars : HashMap<Script, CharArray>() {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'
         )
-        this[CLOSER] = charArrayOf(
-            '.', '!', '?', '؟'
-        )
+        this[CLOSER] = charArrayOf('.', '!', '?', '؟')
         this[MISC_MARK] = charArrayOf(
             ',', '_', '\\', '\"', '\'', '[', ']', '{', '}', '^', '(', ')', '،', '؛', '»', '«'
         )
