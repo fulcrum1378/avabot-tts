@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.SoundPool
-import android.os.Bundle
 import android.speech.tts.*
-import android.util.Log
 import android.widget.Toast
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
@@ -104,5 +102,7 @@ class AvaBotService : TextToSpeechService() {
         Toast.makeText(
             c, Gson().toJson(sentences, Analyzer::class.java), Toast.LENGTH_LONG
         ).show()
+        Synthesizer(applicationContext, sentences)
+        // callback
     }
 }
